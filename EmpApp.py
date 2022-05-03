@@ -258,6 +258,11 @@ def input():
     return render_template("attendance.html",cityList=cityList )
 
 
+@app.route("/input1")
+def input1():
+    cityList=db.execute("SELECT * FROM employee")
+    return render_template("DetailsOutput.html",cityList=cityList )
+
 #add attendance
 @app.route("/empattendance", methods=['POST'])
 def EmpAttandance():
