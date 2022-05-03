@@ -270,7 +270,11 @@
                     			<option value="{{e.emp_id}}">{{e.emp_id}}}</option>
                     		{% endfor %}
             		</select>
-				
+				Choose a City<SELECT name="city">
+				{% for c in emps %}
+				    <OPTION value={{c.emp_id}}>{{c.emp_id}}</option>
+				{% endfor %}
+				</SELECT>
 
             <div class="dropdown mb-4">
                 <select name="attstatus" class="form-control mb-4">
