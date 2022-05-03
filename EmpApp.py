@@ -246,10 +246,16 @@ def GetSingleEmpData(id):
 #     return render_template("attendance.html", emps=emps )
 
 
+# @app.route("/input")
+# def input():
+#     emps=db.execute("SELECT * FROM employee")
+#     return render_template("attendance.html", emps=emps)
+
+
 @app.route("/input")
 def input():
-    emps=db.execute("SELECT * FROM employee")
-    return render_template("attendance.html", emps=emps)
+    cityList=db.execute("SELECT * FROM employee")
+    return render_template("input.html",cityList=cityList )
 
 
 #add attendance
