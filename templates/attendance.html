@@ -266,12 +266,12 @@
 			<h3 style="color: grey; font-size: 25px">Please Enter Employee ID:</h3>
             		<select name="emp_id" class="form-control mb-4" placeholder="Employee ID" >
                 		<option value="" readonly>Employee ID</option>
-                		{% for e in emps %}
+                		{% for e in employee  %}
                     			<option value="{{e.emp_id}}">{{e.emp_id}}}</option>
                     		{% endfor %}
             		</select>
 				Choose a City<SELECT name="city">
-				{% for c in emps %}
+				{% for c in employee %}
 				    <OPTION value={{c.emp_id}}>{{c.emp_id}}</option>
 				{% endfor %}
 				</SELECT>
