@@ -255,7 +255,7 @@ def GetSingleEmpData(id):
 @app.route("/input")
 def input():
     cityList=db.execute("SELECT * FROM employee")
-    return render_template("input.html",cityList=cityList )
+    return render_template("attendance.html",cityList=cityList )
 
 
 #add attendance
