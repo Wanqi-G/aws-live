@@ -316,11 +316,20 @@
                     </div>
                 </div>
             </div>
-		Choose a City<SELECT name="city">
-{% for c in cityList %}
-    <OPTION value={{c.city_id}}>{{c.city_name}}</option>
-{% endfor %}
-</SELECT>
+		
+<select name="emp_id" class="form-control mb-4" placeholder="Employee ID" >
+                		<option value="" readonly>Employee ID</option>
+                		{% for e in employee  %}
+                    			<option value="{{e.emp_id}}">{{e.emp_id}}}</option>
+                    		{% endfor %}
+            		</select>
+				
+				<br><br>
+			Choose a City<SELECT name="city">
+			{% for c in cityList %}
+			    <OPTION value={{c.city_id}}>{{c.city_name}}</option>
+			{% endfor %}
+			</SELECT>		
         </footer>
     </div>
     
