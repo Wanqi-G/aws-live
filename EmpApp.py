@@ -227,22 +227,28 @@ def GetSingleEmpData(id):
     return render_template('GetEmpDataOut.html', emp_id=emp_id,first_name=first_name,last_name=last_name,pri_skill=pri_skill,location=location,email=email,phone_num=phone_num,position=position,hire_date=hire_date,salary=salary,benefit=benefit)
 
 #Get Employee ID
-@app.route("/empattid", methods=['GET','POST'])
-def GetEmpId(): 
-    # #create a cursor
-    # cursor = conn.cursor() 
-    # #execute select statement to fetch data to be displayed in combo/dropdown
-    # cursor.execute('SELECT * FROM employee') 
-    # #fetch all rows ans store as a set of tuples 
-    # emps = cursor.fetchall() 
-    # #render template and send the set of tuples to the HTML file for displaying
-    # return render_template("attendance.html", emps=emps )
-    mycursor = db_conn.cursor()
-    getempid = "select * from employee"
-    mycursor.execute(getempid)
-    employee = mycursor.fetchall()
-    emps = mycursor.fetchall()
-    return render_template("attendance.html", emps=emps )
+# @app.route("/empattid", methods=['GET','POST'])
+# def GetEmpId(): 
+#     # #create a cursor
+#     # cursor = conn.cursor() 
+#     # #execute select statement to fetch data to be displayed in combo/dropdown
+#     # cursor.execute('SELECT * FROM employee') 
+#     # #fetch all rows ans store as a set of tuples 
+#     # emps = cursor.fetchall() 
+#     # #render template and send the set of tuples to the HTML file for displaying
+#     # return render_template("attendance.html", emps=emps )
+#     mycursor = db_conn.cursor()
+#     getempid = "select * from employee"
+#     mycursor.execute(getempid)
+#     employee = mycursor.fetchall()
+#     emps = mycursor.fetchall()
+#     return render_template("attendance.html", emps=emps )
+
+
+@app.route("/input")
+def input():
+    emps=db.execute("SELECT * FROM employee")
+    return render_template("attendance.html", emps=emps)
 
 
 #add attendance
