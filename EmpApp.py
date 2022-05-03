@@ -211,6 +211,7 @@ def GetEmpData():
     
 
     return render_template('DetailsOutput.html', employee=employee)
+    return render_template('attendance.html', employee=employee)
 
 #get SINGLE employee
 @app.route("/getemp/<string:id>", methods=['GET','POST'])
