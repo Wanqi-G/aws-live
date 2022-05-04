@@ -49,7 +49,13 @@ def benefits():
 #payroll page
 @app.route("/payroll", methods=['GET', 'POST'])
 def payroll():
-    return render_template('payroll.html')
+       #create a cursor
+    mycursor = db_conn.cursor()
+    getempdata = "select * from employee"
+    mycursor.execute(getempdata)
+    emps = mycursor.fetchall()
+    #render template and send the set of tuples to the HTML file for displaying
+    return render_template('payroll.html',emps=emps)
 
 #staff details page
 @app.route("/staff", methods=['GET', 'POST'])
@@ -211,7 +217,6 @@ def GetEmpData():
     
 
     return render_template('DetailsOutput.html', employee=employee)
-    return render_template('attendance.html', employee=employee)
 
 #get SINGLE employee
 @app.route("/getemp/<string:id>", methods=['GET','POST'])
@@ -223,61 +228,39 @@ def GetSingleEmpData(id):
     mycursor.execute(getempdata,(emp_id))
     result = mycursor.fetchall()
     (emp_id, first_name, last_name, pri_skill, location, email, phone_num, position, hire_date, salary, benefit) = result[0]   
-    #image_url = showimage(bucket)
-
-    return render_template('GetEmpDataOut.html', emp_id=emp_id,first_name=first_name,last_name=last_name,pri_skill=pri_skill,location=location,email=email,phone_num=phone_num,position=position,hire_date=hire_date,salary=salary,benefit=benefit)
+    #image_url = showimage(bucket, id)
+    # commented as not sure S3 image work or not
+    #return render_template('GetEmpOutput.html', emp_id=emp_id,first_name=first_name,last_name=last_name,pri_skill=pri_skill,location=location,email=email,phone_num=phone_num,position=position,hire_date=hire_date,salary=salary,benefit=benefit, image_url=image_url)
+    return render_template('GetEmpOutput.html', emp_id=emp_id,first_name=first_name,last_name=last_name,pri_skill=pri_skill,location=location,email=email,phone_num=phone_num,position=position,hire_date=hire_date,salary=salary,benefit=benefit)
 
 #Get Employee ID
-# @app.route("/empattid", methods=['GET','POST'])
-# def GetEmpId(): 
-#     # #create a cursor
-#     # cursor = conn.cursor() 
-#     # #execute select statement to fetch data to be displayed in combo/dropdown
-#     # cursor.execute('SELECT * FROM employee') 
-#     # #fetch all rows ans store as a set of tuples 
-#     # emps = cursor.fetchall() 
-#     # #render template and send the set of tuples to the HTML file for displaying
-#     # return render_template("attendance.html", emps=emps )
-#     mycursor = db_conn.cursor()
-#     getempid = "select * from employee"
-#     mycursor.execute(getempid)
-#     employee = mycursor.fetchall()
-#     emps = mycursor.fetchall()
-#     return render_template("attendance.html", emps=emps )
-
-
-# @app.route("/input")
-# def input():
-#     emps=db.execute("SELECT * FROM employee")
-#     return render_template("attendance.html", emps=emps)
-
-
-@app.route("/input")
-def input():
-    cityList=db.execute("SELECT * FROM employee")
-    return render_template("attendance.html",cityList=cityList )
-
-
-@app.route("/input1")
-def input1():
-    cityList=db.execute("SELECT * FROM employee")
-    return render_template("DetailsOutput.html",cityList=cityList )
+@app.route("/empattid", methods=['GET','POST'])
+def GetEmpId(): 
+    #create a cursor
+    mycursor = db_conn.cursor()
+    getempdata = "select * from employee"
+    mycursor.execute(getempdata)
+    emps = mycursor.fetchall()
+    #render template and send the set of tuples to the HTML file for displaying
+    return render_template("attendance.html",emps=emps )
 
 #add attendance
 @app.route("/empattendance", methods=['POST'])
 def EmpAttandance():
    
     emp_id = request.form['emp_id']
-    date = request.form['date']
-    time = request.form['time']
+    now = datetime.now()
+    date = now.strftime("%Y-%m-%d")
+    time = now.strftime("%H:%M:%S")
+    status = request.form['attstatus']
 
-    insert_sql = "INSERT INTO attendance VALUES (%s, %s, %s)"
+    insert_sql = "INSERT INTO attendance VALUES (%s, %s, %s, %s)"
     cursor = db_conn.cursor()
     
     try:
-        cursor.execute(insert_sql, (emp_id, date, time))
+        cursor.execute(insert_sql, (emp_id, date, time, status))
         db_conn.commit()
-        status = "Employee " + emp_id + " has checked in at " + date +", " + time 
+        empstatus = "Employee " + emp_id + " has checked in at " + date +", " + time 
 
     except Exception as e:
             return str(e)
@@ -285,23 +268,23 @@ def EmpAttandance():
     finally:
         cursor.close()
 
-    return render_template('Index.html', status=status) #currently no attendanceOutput.html or any similiar page
+    return render_template('Index.html', status=empstatus) #currently no attendanceOutput.html or any similiar page
 
 #get payroll
-@app.route("/getpay", methods=['GET','POST'])
-def GetPayroll():
-    emp_id = request.form['emp_id']
+@app.route("/getpay/<string:id>", methods=['GET','POST'])
+def GetPayroll(id):
+    #emp_id = request.form['emp_id']
     mycursor = db_conn.cursor()
     getempdata = "select first_name, last_name, salary from employee WHERE emp_id = %s"
     mycursor.execute(getempdata,(emp_id))
     result = mycursor.fetchall()
     (emp_id, first_name, last_name, salary) = result[0]
-    return render_template('payroll.html', emp_id=emp_id,first_name=first_name,last_name=last_name,salary=salary)   #not sure send to where
+    return render_template('PayrollDetails.html', emp_id=emp_id,first_name=first_name,last_name=last_name,salary=salary)
 
-def showimage(bucket):
+def showimage(bucket, id):
     s3_client = boto3.client('s3')
     public_urls = []
-    emp_id = request.form['emp_id']
+    emp_id = id
     try:
         for item in s3_client.list_objects(Bucket=bucket)['Contents']:
             presigned_url = s3_client.generate_presigned_url('get_object', Params = {'Bucket': bucket, 'Key': item['Key']}, ExpiresIn = 100)
