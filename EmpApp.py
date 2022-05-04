@@ -271,7 +271,7 @@ def EmpAttandance():
     return render_template('Index.html', status=empstatus) #currently no attendanceOutput.html or any similiar page
 
 #get payroll
-@app.route("/getpay/<string:id>", methods=['GET','POST'])
+@app.route("/getpayroll/<string:id>", methods=['GET','POST'])
 def GetPayroll(id):
     #emp_id = request.form['emp_id']
     mycursor = db_conn.cursor()
