@@ -274,7 +274,6 @@ def EmpAttandance():
 @app.route("/getpay/<string:id>", methods=['GET','POST'])
 def GetPayroll(id):
     emp_id = request.form['emp_id']
-    emp_id = id
     mycursor = db_conn.cursor()
     getempdata = "select first_name, last_name, salary from employee WHERE emp_id = %s"
     mycursor.execute(getempdata,(emp_id))
